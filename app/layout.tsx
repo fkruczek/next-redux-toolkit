@@ -1,5 +1,7 @@
 import Providers from "@/components/Provider";
+import AppToast from "@/components/Toast";
 import Link from "next/link";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 export const metadata = {
   title: "Create Next App",
@@ -22,6 +24,7 @@ export default function RootLayout({
             Home
           </Link>
           {children}
+          <AppToast />
         </Providers>
       </body>
     </html>

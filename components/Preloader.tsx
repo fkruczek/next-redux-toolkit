@@ -1,8 +1,8 @@
 "use client";
 
+import { User } from "@/schema/user";
 import { store } from "@/store";
 import { setStartupUser } from "@/store/usersSlice";
-import { User } from "@/types";
 import { useRef } from "react";
 
 export default function Preloader({ users }: { users: User[] }) {

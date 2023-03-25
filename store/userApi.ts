@@ -1,11 +1,11 @@
+import { User, UserInput } from "@/schema/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
-
-import { User, UserInput } from "@/types";
 
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/" }),
   tagTypes: ["user"],
+  keepUnusedDataFor: 0,
   endpoints: (builder) => ({
     users: builder.query<User[], string>({
       query: (q) => `users?sortBy=${q}`,

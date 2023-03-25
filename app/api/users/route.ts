@@ -1,3 +1,4 @@
+import { UserInput } from "@/schema/user";
 import { users } from "@/users-database";
 import { NextResponse } from "next/server";
 
@@ -16,13 +17,30 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request, res: Response) {
-  users.push({
-    id: users.length + 1,
-    name: "test",
-    username: "test",
-    city: "test",
-    email: "test",
-  });
+  const requestBody = await req.json();
 
-  return NextResponse.json("ok");
+  try {
+    UserInput.parse(requestBody);
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Invalid request body" },
+      { status: 400 }
+    );
+  }
+
+  if (users.find((u) => u.email === requestBody.email)) {
+    return NextResponse.json(
+      { message: "Email already exists" },
+      { status: 400 }
+    );
+  }
+
+  const newUser = {
+    id: new Date().getTime(),
+    ...requestBody,
+  };
+
+  users.push(newUser);
+
+  return NextResponse.json(newUser);
 }

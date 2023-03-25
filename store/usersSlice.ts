@@ -1,7 +1,6 @@
+import { User } from "@/schema/user";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-
-import { User } from "@/types";
 
 export interface UsersState {
   sortBy: string;

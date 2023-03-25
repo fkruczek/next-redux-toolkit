@@ -1,8 +1,8 @@
 "use client";
 
+import { User } from "@/schema/user";
 import { userApi } from "@/store/userApi";
 import { removeUser, setSortBy } from "@/store/usersSlice";
-import { User } from "@/types";
 import { useAppDispatch } from "./UserList";
 
 const UserTable = ({ users }: { users: User[] }) => {

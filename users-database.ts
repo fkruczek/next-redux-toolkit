@@ -1,20 +1,20 @@
 export const users = [
   {
-    id: 1,
+    id: new Date().getTime(),
     name: "John Doe",
     username: "johndoe",
     email: "johndoe@test.test",
     city: "New York",
   },
   {
-    id: 2,
+    id: new Date().getTime() + 1,
     name: "Adam Neely",
     username: "adamneely",
     email: "adamneely@test.test",
     city: "Los Angeles",
   },
   {
-    id: 3,
+    id: new Date().getTime() + 2,
     name: "Ben Dev",
     username: "bendev",
     email: "bendev@test.test",

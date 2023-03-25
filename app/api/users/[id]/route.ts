@@ -7,11 +7,16 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
 
   // TODO: error handling
   if (typeof userId !== "string") {
-    return NextResponse.json("id is required");
+    return NextResponse.json("Id param is required", { status: 400 });
   }
 
   const index = users.findIndex((user) => user.id === parseInt(userId));
   users.splice(index, 1);
 
-  return NextResponse.json("ok");
+  return NextResponse.json(
+    {
+      message: "User deleted",
+    },
+    { status: 200 }
+  );
 }

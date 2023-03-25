@@ -1,13 +1,10 @@
 "use client";
 
+import { User } from "@/schema/user";
+import { AppDispatch, RootState } from "@/store";
+import Link from "next/link";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
-
-import { AppDispatch, RootState } from "@/store";
-
-import { User } from "@/types";
-
-import Link from "next/link";
 import UserTable from "./UserTable";
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
