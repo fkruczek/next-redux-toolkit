@@ -1,22 +1,32 @@
 "use client";
-
 import { closeDialog } from "@/store/dialogSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppMutation, useAppSelector } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
 import { removeUser } from "@/store/usersSlice";
 import { Dialog } from "@headlessui/react";
+import { toastError, toastSuccess } from "./Toast";
 
-export default function ConfirmRemoveUserDialog({}: {}) {
-  const { isLoading, isOpen, userId, username } = useAppSelector(
-    (state) => state.dialog
-  );
+const useRemoveUser = (userId: string) => {
   const dispatch = useAppDispatch();
 
-  const confirmRemove = () => {
-    dispatch(removeUser(userId));
-    dispatch(userApi.endpoints.deleteUser.initiate(userId));
-    handleCloseDialog();
-  };
+  return useAppMutation({
+    mutation: userApi.endpoints.deleteUser,
+    onSuccess: () => {
+      dispatch(removeUser(userId));
+      dispatch(closeDialog());
+      toastSuccess("User removed successfully.");
+    },
+    onError: (error) => {
+      toastError(error.error.data.message);
+    },
+  });
+};
+
+export default function ConfirmRemoveUserDialog() {
+  const { userId, username, isOpen } = useAppSelector((state) => state.dialog);
+  const { mutate, isPending } = useRemoveUser(userId);
+
+  const dispatch = useAppDispatch();
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());
@@ -39,8 +49,8 @@ export default function ConfirmRemoveUserDialog({}: {}) {
             <div className="w-full flex gap-4 justify-end">
               <button onClick={handleCloseDialog}>Cancel</button>
               {/* TODO: loading, extract button */}
-              <button onClick={confirmRemove}>
-                Delete{isLoading && "LOADING"}
+              <button onClick={() => mutate(userId)}>
+                Delete{isPending && "LOADING"}
               </button>
             </div>
           </Dialog.Panel>

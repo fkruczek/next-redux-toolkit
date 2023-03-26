@@ -1,54 +1,16 @@
 "use client";
 
-import { AppErrorResponse } from "@/schema/api";
-import { User, UserInput, UserResponse } from "@/schema/user";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { User, UserInput } from "@/schema/user";
+import { useAppMutation } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
-import { setIsMutationPending } from "@/store/usersSlice";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toastError, toastSuccess } from "./Toast";
 
-const useCreateUser = ({
-  onError,
-  onSuccess,
-}: {
-  onError: (error: AppErrorResponse) => void;
-  onSuccess: (data: UserResponse) => void;
-}) => {
-  const dispatch = useAppDispatch();
-  const isPending = useAppSelector((state) => state.users.isMutationPending);
-
-  const mutate = async (data: UserInput) => {
-    dispatch(setIsMutationPending(true));
-    dispatch(userApi.endpoints.createOrUpdateUser.initiate(data));
-
-    const response = await Promise.all(
-      dispatch(userApi.util.getRunningMutationsThunk())
-    ).then((res) => res[0]);
-
-    dispatch(setIsMutationPending(false));
-
-    try {
-      UserResponse.parse(response);
-      onSuccess(response as UserResponse);
-    } catch (error) {
-      AppErrorResponse.parse(response);
-      onError(response as AppErrorResponse);
-    }
-  };
-
-  return { mutate, isPending };
-};
-
-function UserForm({ defaultValues }: { defaultValues?: User }) {
+const useCreateUser = () => {
   const router = useRouter();
-
-  const { register, handleSubmit, setError } = useForm<UserInput>({
-    defaultValues,
-  });
-
-  const { mutate, isPending } = useCreateUser({
+  return useAppMutation({
+    mutation: userApi.endpoints.createOrUpdateUser,
     onSuccess: () => {
       toastSuccess("User created successfully.");
       router.push("/home");
@@ -57,6 +19,14 @@ function UserForm({ defaultValues }: { defaultValues?: User }) {
       toastError(error.error.data.message);
     },
   });
+};
+
+function UserForm({ defaultValues }: { defaultValues?: User }) {
+  const { register, handleSubmit } = useForm<UserInput>({
+    defaultValues,
+  });
+
+  const { mutate, isPending } = useCreateUser();
 
   function onSubmit(data: UserInput) {
     mutate(data);
