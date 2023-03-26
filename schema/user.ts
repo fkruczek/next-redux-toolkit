@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createSuccessResponseSchemaFor } from "./api";
 
 export const User = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   username: z.string(),
   email: z.string(),

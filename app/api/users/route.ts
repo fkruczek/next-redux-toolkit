@@ -1,18 +1,17 @@
-import { User, UserInput } from "@/schema/user";
-import { users } from "@/users-database";
+import db from "@/prisma/db";
+import { UserInput } from "@/schema/user";
 import { errorResponse, successResponse } from "@/utils/api";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const sortBy = searchParams.get("sortBy");
-  if (sortBy === "username") {
-    users.sort((a, b) => a.username.localeCompare(b.username));
-  }
 
-  if (sortBy === "id") {
-    users.sort((a, b) => a.id - b.id);
-  }
+  const users = await db.user.findMany({
+    orderBy: {
+      [sortBy || "id"]: "asc",
+    },
+  });
 
   return successResponse(users);
 }
@@ -20,21 +19,28 @@ export async function GET(req: Request) {
 export async function POST(req: Request, res: Response): Promise<NextResponse> {
   try {
     const requestBody = await req.json();
-
     const userInput = UserInput.parse(requestBody);
 
-    if (users.find((u) => u.email === userInput.email)) {
-      return errorResponse("Email already exists");
+    const userInDb = await db.user.findUnique({
+      where: {
+        username: userInput.username,
+      },
+    });
+
+    if (userInDb) {
+      return errorResponse("User already exists", 400);
     }
 
-    const newUser: User = {
-      ...userInput,
-      id: new Date().getTime(),
-    };
+    const user = await db.user.create({
+      data: {
+        username: userInput.username,
+        city: userInput.city,
+        email: userInput.email,
+        name: userInput.name,
+      },
+    });
 
-    users.push(newUser);
-
-    return successResponse(newUser);
+    return successResponse(user);
   } catch (error) {
     return errorResponse();
   }

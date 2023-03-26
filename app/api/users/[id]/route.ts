@@ -1,5 +1,5 @@
+import db from "@/prisma/db";
 import { UserInput } from "@/schema/user";
-import { users } from "@/users-database";
 import { errorResponse, successResponse } from "@/utils/api";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
@@ -10,7 +10,11 @@ export async function GET(req: Request, { params }: { params: Params }) {
     return errorResponse("Invalid user id");
   }
 
-  const user = users.find((user) => user.id === parseInt(userId));
+  const user = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
 
   if (!user) {
     return errorResponse("User not found", 404);
@@ -27,17 +31,26 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       return errorResponse("Invalid user id");
     }
 
-    const user = users.find((user) => user.id === parseInt(userId));
+    const body = await req.json();
 
-    if (!user) {
+    const userInDb = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!userInDb) {
       return errorResponse("User not found", 404);
     }
 
-    const body = await req.json();
-
     const { id, ...updatedUser } = UserInput.parse(body);
 
-    Object.assign(user, updatedUser);
+    const user = await db.user.update({
+      where: {
+        id: userId,
+      },
+      data: updatedUser,
+    });
 
     return successResponse(user);
   } catch {
@@ -52,13 +65,21 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
     return errorResponse("Invalid user id");
   }
 
-  const userIndex = users.findIndex((user) => user.id === parseInt(userId));
+  const userInDb = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
 
-  if (userIndex === -1) {
+  if (!userInDb) {
     return errorResponse("User not found", 404);
   }
 
-  users.splice(userIndex, 1);
+  await db.user.delete({
+    where: {
+      id: userId,
+    },
+  });
 
   return successResponse("User deleted");
 }
