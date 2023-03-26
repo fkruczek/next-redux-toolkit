@@ -1,5 +1,6 @@
-import { UserInput } from "@/schema/user";
+import { User, UserInput } from "@/schema/user";
 import { users } from "@/users-database";
+import { errorResponse, successResponse } from "@/utils/api";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -13,34 +14,28 @@ export async function GET(req: Request) {
     users.sort((a, b) => a.id - b.id);
   }
 
-  return NextResponse.json(users);
+  return successResponse(users);
 }
 
-export async function POST(req: Request, res: Response) {
-  const requestBody = await req.json();
-
+export async function POST(req: Request, res: Response): Promise<NextResponse> {
   try {
-    UserInput.parse(requestBody);
+    const requestBody = await req.json();
+
+    const userInput = UserInput.parse(requestBody);
+
+    if (users.find((u) => u.email === userInput.email)) {
+      return errorResponse("Email already exists");
+    }
+
+    const newUser: User = {
+      ...userInput,
+      id: new Date().getTime(),
+    };
+
+    users.push(newUser);
+
+    return successResponse(newUser);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Invalid request body" },
-      { status: 400 }
-    );
+    return errorResponse();
   }
-
-  if (users.find((u) => u.email === requestBody.email)) {
-    return NextResponse.json(
-      { message: "Email already exists" },
-      { status: 400 }
-    );
-  }
-
-  const newUser = {
-    id: new Date().getTime(),
-    ...requestBody,
-  };
-
-  users.push(newUser);
-
-  return NextResponse.json(newUser);
 }

@@ -11,10 +11,10 @@ export const userApi = createApi({
       query: (q) => `users?sortBy=${q}`,
       providesTags: (result, error, users) => [{ type: "user", users }],
     }),
-    createUser: builder.mutation<User, UserInput>({
+    createOrUpdateUser: builder.mutation<User, UserInput>({
       query: (user) => ({
-        url: "users",
-        method: "POST",
+        url: user.id ? `users/${user.id}` : "users",
+        method: user.id ? "PUT" : "POST",
         body: user,
       }),
       invalidatesTags: [{ type: "user" }],

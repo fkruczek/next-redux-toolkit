@@ -1,9 +1,10 @@
 "use client";
 
 import { User } from "@/schema/user";
+import { useAppDispatch } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
 import { removeUser, setSortBy } from "@/store/usersSlice";
-import { useAppDispatch } from "./UserList";
+import Link from "next/link";
 
 const UserTable = ({ users }: { users: User[] }) => {
   const dispatch = useAppDispatch();
@@ -45,7 +46,9 @@ const UserTable = ({ users }: { users: User[] }) => {
             <td>{user.username}</td>
             <td>{user.email}</td>
             <td>{user.city}</td>
-            <td>edit</td>
+            <td>
+              <Link href={`/edit/${user.id}`}>edit</Link>
+            </td>
             <td
               onClick={() => {
                 dispatch(userApi.endpoints.deleteUser.initiate(user.id));

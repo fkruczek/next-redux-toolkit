@@ -1,12 +1,13 @@
 "use client";
 
 import { AppErrorResponse } from "@/schema/api";
-import { UserInput, UserResponse } from "@/schema/user";
+import { User, UserInput, UserResponse } from "@/schema/user";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
+import { setIsMutationPending } from "@/store/usersSlice";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toastError, toastSuccess } from "./Toast";
-import { useAppDispatch } from "./UserList";
 
 const useCreateUser = ({
   onError,
@@ -16,45 +17,41 @@ const useCreateUser = ({
   onSuccess: (data: UserResponse) => void;
 }) => {
   const dispatch = useAppDispatch();
+  const isPending = useAppSelector((state) => state.users.isMutationPending);
 
   const mutate = async (data: UserInput) => {
-    dispatch(userApi.endpoints.createUser.initiate(data));
+    dispatch(setIsMutationPending(true));
+    dispatch(userApi.endpoints.createOrUpdateUser.initiate(data));
 
     const response = await Promise.all(
       dispatch(userApi.util.getRunningMutationsThunk())
     ).then((res) => res[0]);
 
+    dispatch(setIsMutationPending(false));
+
     try {
       UserResponse.parse(response);
       onSuccess(response as UserResponse);
-    } catch {
-      const result = AppErrorResponse.safeParse(response);
-      if (result.success) {
-        onError(response as AppErrorResponse);
-        return;
-      }
-
-      throw new Error("Unknown api error occured.");
+    } catch (error) {
+      AppErrorResponse.parse(response);
+      onError(response as AppErrorResponse);
     }
   };
 
-  return { mutate };
+  return { mutate, isPending };
 };
 
-function UserForm() {
+function UserForm({ id, ...defaultValues }: User) {
   const router = useRouter();
 
   const { register, handleSubmit, setError } = useForm<UserInput>({
-    // TODO: remove this
     defaultValues: {
-      name: "asdf",
-      username: "asdf",
-      email: "asdf",
-      city: "asdf",
+      id: id ? String(id) : "",
+      ...defaultValues,
     },
   });
 
-  const { mutate } = useCreateUser({
+  const { mutate, isPending } = useCreateUser({
     onSuccess: () => {
       toastSuccess("User created successfully.");
       router.push("/home");
@@ -70,6 +67,7 @@ function UserForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2">
+      <input type="hidden" {...register("id")} />
       <label>
         Name:
         <input {...register("name", { required: true })} />
@@ -87,6 +85,7 @@ function UserForm() {
         <input {...register("city", { required: true })} />
       </label>
       <button className="bg-slate-600 text-white">SUBMIT</button>
+      {isPending && <div className="w-10 h-10 bg-red-500">pending</div>}
     </form>
   );
 }

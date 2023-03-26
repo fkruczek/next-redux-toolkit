@@ -1,17 +1,25 @@
 import Preloader from "@/components/Preloader";
 import UserList from "@/components/UserList";
+import { UserArray } from "@/schema/user";
 import { store } from "@/store";
-import { setStartupUser } from "@/store/usersSlice";
+import { setStartupUsers } from "@/store/usersSlice";
 
-export default async function Home() {
+async function getUsers() {
+  // TODO: api url from config
   const req = await fetch("http://localhost:3000/api/users");
   const data = await req.json();
-  store.dispatch(setStartupUser(data));
+
+  return UserArray.parse(data);
+}
+
+export default async function Home() {
+  const users = await getUsers();
+  store.dispatch(setStartupUsers(users));
   // TODO: error handling
   return (
-    <main>
-      <Preloader users={data} />
+    <>
+      <Preloader users={users} />
       <UserList />
-    </main>
+    </>
   );
 }

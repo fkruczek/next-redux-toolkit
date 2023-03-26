@@ -1,14 +1,10 @@
 "use client";
 
 import { User } from "@/schema/user";
-import { AppDispatch, RootState } from "@/store";
+import { useAppSelector } from "@/store/hooks";
 import Link from "next/link";
-import type { TypedUseSelectorHook } from "react-redux";
-import { useDispatch, useSelector } from "react-redux";
-import UserTable from "./UserTable";
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+import UserTable from "./UserTable";
 
 const UserList = () => {
   const sortBy = useAppSelector((state) => state.users.sortBy);
@@ -19,7 +15,7 @@ const UserList = () => {
 
   return (
     <div className="grid justify-items-start">
-      {/* Improve styles */}
+      {/* TODO: Improve styles */}
       <Link href="/add" className="bg-blue-400 p-4 rounded-md text-white">
         Add user
       </Link>

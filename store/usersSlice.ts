@@ -5,21 +5,23 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface UsersState {
   sortBy: string;
   startupUsers: User[];
+  isMutationPending: boolean;
 }
 
 const initialState: UsersState = {
   sortBy: "",
   startupUsers: [],
+  isMutationPending: false,
 };
 
-const usersSlice = createSlice({
+const userSlice = createSlice({
   name: "sortBy",
   initialState,
   reducers: {
     setSortBy: (state, action: PayloadAction<string>) => {
       state.sortBy = action.payload;
     },
-    setStartupUser: (state, action: PayloadAction<User[]>) => {
+    setStartupUsers: (state, action: PayloadAction<User[]>) => {
       state.startupUsers = action.payload;
     },
     removeUser: (state, action: PayloadAction<number>) => {
@@ -27,8 +29,12 @@ const usersSlice = createSlice({
         (user) => user.id !== action.payload
       );
     },
+    setIsMutationPending: (state, action: PayloadAction<boolean>) => {
+      state.isMutationPending = action.payload;
+    },
   },
 });
 
-export const { setSortBy, setStartupUser, removeUser } = usersSlice.actions;
-export default usersSlice.reducer;
+export const { setSortBy, setStartupUsers, removeUser, setIsMutationPending } =
+  userSlice.actions;
+export default userSlice.reducer;
