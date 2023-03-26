@@ -3,6 +3,7 @@
 import { User } from "@/schema/user";
 import { useAppSelector } from "@/store/hooks";
 import Link from "next/link";
+import ConfirmRemoveUserDialog from "./ConfirmRemoveUserDialog";
 
 import UserTable from "./UserTable";
 
@@ -20,6 +21,7 @@ const UserList = () => {
         Add user
       </Link>
       <UserTable users={data || startupUsers} />
+      <ConfirmRemoveUserDialog />
     </div>
   );
 };

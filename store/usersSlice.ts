@@ -1,30 +1,32 @@
-import { User } from "@/schema/user";
+import { SortBy, User } from "@/schema/user";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface UsersState {
-  sortBy: string;
+export type UsersState = {
+  sortBy: SortBy;
   startupUsers: User[];
   isMutationPending: boolean;
-}
+  isRemoveConfirmDialogOpen: boolean;
+};
 
 const initialState: UsersState = {
-  sortBy: "",
+  sortBy: "id",
   startupUsers: [],
   isMutationPending: false,
+  isRemoveConfirmDialogOpen: false,
 };
 
 const userSlice = createSlice({
-  name: "sortBy",
+  name: "users",
   initialState,
   reducers: {
-    setSortBy: (state, action: PayloadAction<string>) => {
+    setSortBy: (state, action: PayloadAction<SortBy>) => {
       state.sortBy = action.payload;
     },
     setStartupUsers: (state, action: PayloadAction<User[]>) => {
       state.startupUsers = action.payload;
     },
-    removeUser: (state, action: PayloadAction<number>) => {
+    removeUser: (state, action: PayloadAction<string>) => {
       state.startupUsers = state.startupUsers.filter(
         (user) => user.id !== action.payload
       );

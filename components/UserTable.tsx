@@ -1,36 +1,36 @@
 "use client";
 
-import { User } from "@/schema/user";
+import { SortBy, User } from "@/schema/user";
+import { openDialog } from "@/store/dialogSlice";
 import { useAppDispatch } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
-import { removeUser, setSortBy } from "@/store/usersSlice";
+import { setSortBy } from "@/store/usersSlice";
 import Link from "next/link";
 
 const UserTable = ({ users }: { users: User[] }) => {
   const dispatch = useAppDispatch();
+
+  const sortBy = (sortBy: SortBy) => {
+    dispatch(setSortBy(sortBy));
+    dispatch(userApi.endpoints.users.initiate(sortBy));
+  };
+
+  const openRemoveDialog = (userId: string, username: string) => {
+    dispatch(openDialog({ userId, username }));
+  };
 
   return (
     <table>
       <thead>
         <tr>
           {/* TODO: click button */}
-          <th
-            onClick={() => {
-              dispatch(setSortBy("id"));
-              dispatch(userApi.endpoints.users.initiate("id"));
-            }}
-          >
-            Id
+          <th>
+            <button onClick={() => sortBy("id")}>Id</button>
           </th>
           <th>Name</th>
           {/* TODO: click button */}
-          <th
-            onClick={() => {
-              dispatch(setSortBy("username"));
-              dispatch(userApi.endpoints.users.initiate("username"));
-            }}
-          >
-            Username
+          <th onClick={() => sortBy("username")}>
+            <button>Username</button>
           </th>
           <th>Email</th>
           <th>City</th>
@@ -47,16 +47,9 @@ const UserTable = ({ users }: { users: User[] }) => {
             <td>{user.email}</td>
             <td>{user.city}</td>
             <td>
-              <Link href={`/edit/${user.id}`}>edit</Link>
+              <Link href={`/edit/${user.id}`}>Edit</Link>
             </td>
-            <td
-              onClick={() => {
-                dispatch(userApi.endpoints.deleteUser.initiate(user.id));
-                dispatch(removeUser(user.id));
-              }}
-            >
-              delete
-            </td>
+            <td onClick={() => openRemoveDialog(user.id, user.name)}>Remove</td>
           </tr>
         ))}
       </tbody>

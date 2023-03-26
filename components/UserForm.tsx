@@ -41,7 +41,7 @@ const useCreateUser = ({
   return { mutate, isPending };
 };
 
-function UserForm(defaultValues: User) {
+function UserForm({ defaultValues }: { defaultValues?: User }) {
   const router = useRouter();
 
   const { register, handleSubmit, setError } = useForm<UserInput>({

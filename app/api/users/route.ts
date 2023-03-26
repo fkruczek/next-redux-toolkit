@@ -1,5 +1,5 @@
 import db from "@/prisma/db";
-import { UserInput } from "@/schema/user";
+import { SortBy, UserInput } from "@/schema/user";
 import { errorResponse, successResponse } from "@/utils/api";
 import { NextResponse } from "next/server";
 
@@ -7,13 +7,19 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const sortBy = searchParams.get("sortBy");
 
-  const users = await db.user.findMany({
-    orderBy: {
-      [sortBy || "id"]: "asc",
-    },
-  });
+  try {
+    const validSortBy = SortBy.parse(sortBy || "id");
 
-  return successResponse(users);
+    const users = await db.user.findMany({
+      orderBy: {
+        [validSortBy]: "asc",
+      },
+    });
+
+    return successResponse(users);
+  } catch {
+    return errorResponse();
+  }
 }
 
 export async function POST(req: Request, res: Response): Promise<NextResponse> {

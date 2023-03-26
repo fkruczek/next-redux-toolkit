@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import dialogReducer from "./dialogSlice";
 import { userApi } from "./userApi";
 import usersReducer from "./usersSlice";
 
 export const store = configureStore({
   reducer: {
     users: usersReducer,
+    dialog: dialogReducer,
     userApi: userApi.reducer,
   },
   middleware(getDefaultMiddleware) {

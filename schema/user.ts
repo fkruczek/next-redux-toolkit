@@ -28,3 +28,7 @@ export type UserInput = z.infer<typeof UserInput>;
 export const UserResponse = createSuccessResponseSchemaFor(User);
 
 export type UserResponse = z.infer<typeof UserResponse>;
+
+export const SortBy = z.union([z.literal("id"), z.literal("username")]);
+
+export type SortBy = z.infer<typeof SortBy>;

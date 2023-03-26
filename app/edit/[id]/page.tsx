@@ -21,5 +21,5 @@ export default async function Edit({ params }: { params: Params }) {
 
   const user = await getUser(userId);
 
-  return <UserForm {...user} />;
+  return <UserForm defaultValues={user} />;
 }
