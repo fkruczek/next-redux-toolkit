@@ -19,6 +19,7 @@ const UserTable = ({ users }: { users: User[] }) => {
     dispatch(openDialog({ userId, username }));
   };
 
+  // TODO: reuse table component
   return (
     <table>
       <thead>
@@ -38,7 +39,7 @@ const UserTable = ({ users }: { users: User[] }) => {
           <th>Delete</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody data-cy="users">
         {users.map((user) => (
           <tr key={user.id} className="border border-black">
             <td>{user.id}</td>
@@ -47,9 +48,16 @@ const UserTable = ({ users }: { users: User[] }) => {
             <td>{user.email}</td>
             <td>{user.city}</td>
             <td>
-              <Link href={`/edit/${user.id}`}>Edit</Link>
+              <Link href={`/edit/${user.id}`} data-cy="edit-user">
+                Edit
+              </Link>
             </td>
-            <td onClick={() => openRemoveDialog(user.id, user.name)}>Remove</td>
+            <td
+              onClick={() => openRemoveDialog(user.id, user.name)}
+              data-cy="delete-user"
+            >
+              Remove
+            </td>
           </tr>
         ))}
       </tbody>

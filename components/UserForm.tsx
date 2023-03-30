@@ -5,14 +5,13 @@ import { useAppMutation } from "@/store/hooks";
 import { userApi } from "@/store/userApi";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toastError, toastSuccess } from "./Toast";
+import { toastError } from "./Toast";
 
 const useCreateUser = () => {
   const router = useRouter();
   return useAppMutation({
     mutation: userApi.endpoints.createOrUpdateUser,
     onSuccess: () => {
-      toastSuccess("User created successfully.");
       router.push("/home");
     },
     onError: (error) => {
@@ -37,21 +36,26 @@ function UserForm({ defaultValues }: { defaultValues?: User }) {
       <input type="hidden" {...register("id")} />
       <label>
         Name:
-        <input {...register("name", { required: true })} />
+        <input {...register("name", { required: true })} data-cy="name" />
       </label>
       <label>
         Username:
-        <input {...register("username", { required: true })} />
+        <input
+          {...register("username", { required: true })}
+          data-cy="username"
+        />
       </label>
       <label>
         Email:
-        <input {...register("email", { required: true })} />
+        <input {...register("email", { required: true })} data-cy="email" />
       </label>
       <label>
         City:
-        <input {...register("city", { required: true })} />
+        <input {...register("city", { required: true })} data-cy="city" />
       </label>
-      <button className="bg-slate-600 text-white">SUBMIT</button>
+      <button className="bg-slate-600 text-white" data-cy="submit">
+        SUBMIT
+      </button>
       {isPending && <div className="w-10 h-10 bg-red-500">pending</div>}
     </form>
   );

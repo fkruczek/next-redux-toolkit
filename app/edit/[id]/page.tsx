@@ -4,9 +4,9 @@ import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 async function getUser(id: string) {
   // TODO: api url from config
-  const data = await fetch("http://localhost:3000/api/users/" + id).then(
-    (res) => res.json()
-  );
+  const data = await fetch("http://localhost:3000/api/users/" + id, {
+    next: { revalidate: 0 },
+  }).then((res) => res.json());
 
   const user = User.parse(data);
   return user;

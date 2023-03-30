@@ -17,7 +17,11 @@ const UserList = () => {
   return (
     <div className="grid justify-items-start">
       {/* TODO: Improve styles */}
-      <Link href="/add" className="bg-blue-400 p-4 rounded-md text-white">
+      <Link
+        href="/add"
+        className="bg-blue-400 p-4 rounded-md text-white"
+        data-cy="add-user"
+      >
         Add user
       </Link>
       <UserTable users={data || startupUsers} />

@@ -41,7 +41,10 @@ export default function ConfirmRemoveUserDialog() {
     >
       <div className="fixed inset-0 overflow-y-auto bg-opacity-40 bg-amber-900">
         <div className="flex min-h-full items-center justify-center p-4">
-          <Dialog.Panel className="bg-white rounded-md p-10 grid gap-4">
+          <Dialog.Panel
+            className="bg-white rounded-md p-10 grid gap-4"
+            data-cy="delete-dialog"
+          >
             <Dialog.Title className="text-xl">Delete</Dialog.Title>
             <Dialog.Description>
               Do you want to delete user: {username}
@@ -49,7 +52,7 @@ export default function ConfirmRemoveUserDialog() {
             <div className="w-full flex gap-4 justify-end">
               <button onClick={handleCloseDialog}>Cancel</button>
               {/* TODO: loading, extract button */}
-              <button onClick={() => mutate(userId)}>
+              <button onClick={() => mutate(userId)} data-cy="delete-button">
                 Delete{isPending && "LOADING"}
               </button>
             </div>

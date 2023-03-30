@@ -1,4 +1,4 @@
-import db from "@/prisma/db";
+import { prisma } from "@/prisma/db";
 import { SortBy, UserInput } from "@/schema/user";
 import { errorResponse, successResponse } from "@/utils/api";
 import { NextResponse } from "next/server";
@@ -10,14 +10,17 @@ export async function GET(req: Request) {
   try {
     const validSortBy = SortBy.parse(sortBy || "id");
 
-    const users = await db.user.findMany({
+    const users = await prisma.user.findMany({
       orderBy: {
         [validSortBy]: "asc",
       },
     });
 
+    console.log("get function", users);
+
     return successResponse(users);
-  } catch {
+  } catch (e) {
+    console.log(e);
     return errorResponse();
   }
 }
@@ -27,7 +30,7 @@ export async function POST(req: Request, res: Response): Promise<NextResponse> {
     const requestBody = await req.json();
     const userInput = UserInput.parse(requestBody);
 
-    const userInDb = await db.user.findUnique({
+    const userInDb = await prisma.user.findUnique({
       where: {
         username: userInput.username,
       },
@@ -37,7 +40,7 @@ export async function POST(req: Request, res: Response): Promise<NextResponse> {
       return errorResponse("User already exists", 400);
     }
 
-    const user = await db.user.create({
+    const user = await prisma.user.create({
       data: {
         username: userInput.username,
         city: userInput.city,
