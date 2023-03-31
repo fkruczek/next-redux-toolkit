@@ -2,7 +2,7 @@
 
 import { User } from "@/schema/user";
 import { useAppSelector } from "@/store/hooks";
-import Link from "next/link";
+import AppLink from "./AppLink";
 import ConfirmRemoveUserDialog from "./ConfirmRemoveUserDialog";
 
 import UserTable from "./UserTable";
@@ -15,16 +15,13 @@ const UserList = () => {
   );
 
   return (
-    <div className="grid justify-items-start">
-      {/* TODO: Improve styles */}
-      <Link
-        href="/add"
-        className="bg-blue-400 p-4 rounded-md text-white"
-        data-cy="add-user"
-      >
+    <div className="flex flex-col gap-10">
+      <AppLink href="/add" data-cy="add-user">
         Add user
-      </Link>
-      <UserTable users={data || startupUsers} />
+      </AppLink>
+      <div className="overflow-auto">
+        <UserTable users={data || startupUsers} />
+      </div>
       <ConfirmRemoveUserDialog />
     </div>
   );

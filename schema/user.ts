@@ -17,10 +17,10 @@ export type UserArray = z.infer<typeof UserArray>;
 
 export const UserInput = z.object({
   id: z.string().optional(),
-  name: z.string(),
-  username: z.string(),
-  email: z.string(),
-  city: z.string(),
+  name: z.string().min(2).max(40),
+  username: z.string().min(3).max(40),
+  email: z.string().email(),
+  city: z.string().min(2).max(40),
 });
 
 export type UserInput = z.infer<typeof UserInput>;

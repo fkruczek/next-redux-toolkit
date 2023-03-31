@@ -10,3 +10,14 @@ export function errorResponse(
 ) {
   return NextResponse.json({ message }, { status });
 }
+
+export async function appFetch(path: string) {
+  return await fetch(process.env.API_URL + path, {
+    next: { revalidate: 0 },
+  }).then((res) => {
+    if (res.status === 404) {
+      return null;
+    }
+    return res.json();
+  });
+}

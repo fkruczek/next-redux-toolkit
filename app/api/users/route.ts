@@ -16,11 +16,8 @@ export async function GET(req: Request) {
       },
     });
 
-    console.log("get function", users);
-
     return successResponse(users);
-  } catch (e) {
-    console.log(e);
+  } catch {
     return errorResponse();
   }
 }

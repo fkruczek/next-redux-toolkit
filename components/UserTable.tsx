@@ -19,44 +19,49 @@ const UserTable = ({ users }: { users: User[] }) => {
     dispatch(openDialog({ userId, username }));
   };
 
-  // TODO: reuse table component
   return (
-    <table>
-      <thead>
+    <table className="w-full text-center font-light">
+      <thead className="font-light">
         <tr>
-          {/* TODO: click button */}
           <th>
-            <button onClick={() => sortBy("id")}>Id</button>
+            <button onClick={() => sortBy("id")}>id</button>
           </th>
-          <th>Name</th>
-          {/* TODO: click button */}
-          <th onClick={() => sortBy("username")}>
-            <button>Username</button>
+          <th>name</th>
+          <th>
+            <button onClick={() => sortBy("username")}>username</button>
           </th>
-          <th>Email</th>
-          <th>City</th>
-          <th>Edit</th>
-          <th>Delete</th>
+          <th>email</th>
+          <th>city</th>
+          <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody data-cy="users">
         {users.map((user) => (
-          <tr key={user.id} className="border border-black">
+          <tr key={user.id} className="odd:bg-slate-200">
             <td>{user.id}</td>
             <td>{user.name}</td>
             <td>{user.username}</td>
             <td>{user.email}</td>
             <td>{user.city}</td>
             <td>
-              <Link href={`/edit/${user.id}`} data-cy="edit-user">
-                Edit
+              <Link
+                href={`/edit/${user.id}`}
+                data-cy="edit-user"
+                aria-label="Edit user"
+              >
+                ✏️
               </Link>
             </td>
-            <td
-              onClick={() => openRemoveDialog(user.id, user.name)}
-              data-cy="delete-user"
-            >
-              Remove
+            <td>
+              <button
+                onClick={() => openRemoveDialog(user.id, user.name)}
+                data-cy="delete-user"
+                className="px-2 tracking-widest text-red-800"
+                aria-label="Delete user"
+              >
+                ❌
+              </button>
             </td>
           </tr>
         ))}
