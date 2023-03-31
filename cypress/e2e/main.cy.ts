@@ -26,9 +26,12 @@ describe("main.cy.js", () => {
 
       cy.get("[data-cy=users]").should("contain", user.name);
 
-      cy.clickDataCy("edit-user");
-
-      cy.url().should("include", "/edit");
+      cy.contains("tr", user.name).within(() => {
+        cy.get("[data-cy=id-cell]").then(($el) => {
+          cy.clickDataCy("edit-user");
+          cy.url().should("include", "/edit/" + $el.text());
+        });
+      });
 
       cy.get("[data-cy=name]").clear().type(user.updatedName);
 
@@ -38,7 +41,9 @@ describe("main.cy.js", () => {
 
       cy.get("[data-cy=users]").should("contain", user.updatedName);
 
-      cy.clickDataCy("delete-user");
+      cy.contains("tr", user.name).within(() => {
+        cy.clickDataCy("delete-user");
+      });
 
       cy.get("[data-cy=delete-dialog]").should("be.visible");
 

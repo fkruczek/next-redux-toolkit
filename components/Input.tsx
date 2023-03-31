@@ -14,10 +14,12 @@ export default function Input({ name, ...props }: InputProps) {
       <input
         data-cy={name}
         className="relative h-8 text-xl lowercase tracking-widest bg-slate-200 px-2"
+        aria-invalid={!!fieldError || undefined}
+        aria-describedby={fieldError ? `${name}-error` : undefined}
         {...props}
         {...register(name)}
       />
-      <p className="text-xs mt-1 h-8 text-orange-700">
+      <p className="text-xs mt-1 h-8 text-orange-700" id={`${name}-error`}>
         {fieldError?.message?.toString()}
       </p>
     </label>

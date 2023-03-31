@@ -39,7 +39,7 @@ const UserTable = ({ users }: { users: User[] }) => {
       <tbody data-cy="users">
         {users.map((user) => (
           <tr key={user.id} className="odd:bg-slate-200">
-            <td>{user.id}</td>
+            <td data-cy="id-cell">{user.id}</td>
             <td>{user.name}</td>
             <td>{user.username}</td>
             <td>{user.email}</td>
