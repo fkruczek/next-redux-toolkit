@@ -1,4 +1,17 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
+
+const ConfigSchema = z.object({
+  API_URL: z.number(),
+});
+
+ConfigSchema.parse(process.env);
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends z.infer<typeof ConfigSchema> {}
+  }
+}
 
 export function successResponse<TData>(data: TData) {
   return NextResponse.json(data, { status: 200 });
